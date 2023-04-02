@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { buildCashOutPDF } from "../service/pdf-service";
+import { exampleCashOutTrxData } from "../utils/exampleData";
 
 export const pdfController: RequestHandler = (req, res, next) => {
     // przy 'Content-Disposition' określasz czy jako attachment ma się pobierać czy ma się wyświetlić w oknie przeglądarki
@@ -13,9 +14,8 @@ export const pdfController: RequestHandler = (req, res, next) => {
     });
 
     buildCashOutPDF(
-        // tak szybko jak dostaniesz jakiś chunk, zrób to:
+        exampleCashOutTrxData, // dane do pokwitowania
         (chunk) => stream.write(chunk),
-        // jak zakończysz, zrób to:
         () => stream.end()
     );
 };

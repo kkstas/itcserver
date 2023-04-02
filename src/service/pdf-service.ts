@@ -1,11 +1,15 @@
 import PDFDocument from "pdfkit";
+import { IBuildCashOutPDF } from "../types";
 
-type DataCallback = (...args: any[]) => void;
-type EndCallback = () => void;
-
-export const buildCashOutPDF = (
-    dataCallback: DataCallback,
-    endCallback: EndCallback
+/**
+ * @param data dane transakcji CashOut
+ * @param dataCallback callback wykorzystywany przez Controllera do streamoania danych
+ * @param endCallback callback wykorzystywany przez Controllera przy zakończeniu streamu danych
+ */
+export const buildCashOutPDF: IBuildCashOutPDF = (
+    data,
+    dataCallback,
+    endCallback
 ) => {
     const doc = new PDFDocument({ size: "A4" });
 
@@ -21,13 +25,13 @@ export const buildCashOutPDF = (
     const denominationStartHeight = 520;
     const denominationRowSpacing = 15;
 
-    const planetCashLogoPath = `${process.cwd()}/static/images/planet-cash-logo-color.png`;
-    // const monoPath = `${process.cwd()}/static/fonts/MesloLGS-NF-Bold.ttf`;
-    const montserratRegularPath = `${process.cwd()}/static/fonts/Montserrat-Regular.ttf`;
-    const montserratMediumPath = `${process.cwd()}/static/fonts/Montserrat-Medium.ttf`;
-    const montserratBoldPath = `${process.cwd()}/static/fonts/Montserrat-Bold.ttf`;
-    const robotoMonoBoldPath = `${process.cwd()}/static/fonts/RobotoMono-Bold.ttf`;
-    const robotoMonoRegularPath = `${process.cwd()}/static/fonts/RobotoMono-Regular.ttf`;
+    const currentWorkingDirectory = process.cwd();
+    const planetCashLogoPath = `${currentWorkingDirectory}/static/images/planet-cash-logo-color.png`;
+    const montserratRegularPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Regular.ttf`;
+    const montserratMediumPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Medium.ttf`;
+    const montserratBoldPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Bold.ttf`;
+    const robotoMonoBoldPath = `${currentWorkingDirectory}/static/fonts/RobotoMono-Bold.ttf`;
+    const robotoMonoRegularPath = `${currentWorkingDirectory}/static/fonts/RobotoMono-Regular.ttf`;
     // styling dokumentu:
 
     doc.image(planetCashLogoPath, leftRowMargin, 60, {
@@ -39,49 +43,79 @@ export const buildCashOutPDF = (
         width: 200,
         align: "left",
     });
-    doc.text("03.04.2023, 11:29", rightRowMargin, areaOneStartHeight, {
-        width: 200,
-        align: "right",
-        indent: 30,
-    });
+    doc.text(
+        data.transactionStartDateTime, // 12.11.2023 18:15:13
+        rightRowMargin,
+        areaOneStartHeight,
+        {
+            width: 200,
+            align: "right",
+            indent: 30,
+        }
+    );
     // row 2
     doc.text("Terminal", leftRowMargin, areaOneStartHeight + 25, {
         width: 200,
         align: "left",
     });
-    doc.text("RNET6338", rightRowMargin, areaOneStartHeight + 25, {
-        width: 200,
-        align: "right",
-    });
+    doc.text(
+        data.deviceName, // RNET6338
+        rightRowMargin,
+        areaOneStartHeight + 25,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
     // row 3
     doc.text("Nr transakcji", leftRowMargin, areaOneStartHeight + 50, {
         width: 200,
         align: "left",
     });
-    doc.text("023402375203984723", rightRowMargin, areaOneStartHeight + 50, {
-        width: 200,
-        align: "right",
-    });
+    doc.text(
+        data.transactionID, // 02C5C7223161I0004812
+        rightRowMargin,
+        areaOneStartHeight + 50,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
     //row 4
     doc.text("Lokalizacja", leftRowMargin, areaOneStartHeight + 75, {
         width: 200,
         align: "left",
     });
-    // lokalizacja linia 1
-    doc.text("ITCARD", rightRowMargin, areaOneStartHeight + 75, {
-        width: 200,
-        align: "right",
-    });
-    // lokalizacja linia 2
-    doc.text("ul. Zwycięska 43", rightRowMargin, areaOneStartHeight + 95, {
-        width: 200,
-        align: "right",
-    });
-    // lokalizacja linia 3
-    doc.text("Wrocław", rightRowMargin, areaOneStartHeight + 115, {
-        width: 200,
-        align: "right",
-    });
+    // lokalizacja - linia 1
+    doc.text(
+        data.localizationName, // Biedronka
+        rightRowMargin,
+        areaOneStartHeight + 75,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
+    // lokalizacja - linia 2
+    doc.text(
+        data.localizationStreet, // Zwycięska 9-23
+        rightRowMargin,
+        areaOneStartHeight + 95,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
+    // lokalizacja - linia 3
+    doc.text(
+        data.localizationCity, // Wrocław
+        rightRowMargin,
+        areaOneStartHeight + 115,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
 
     doc.text(
         "_______________________________________________________________________",
@@ -93,154 +127,88 @@ export const buildCashOutPDF = (
         }
     );
 
-    // cash etc
-    // row 1 card number
+    // row 1 - card number
     doc.text("Numer karty:", leftRowMargin, areaTwoStartHeight, {
         width: 200,
         align: "left",
     });
 
     doc.font(montserratMediumPath, 14);
-    doc.text("4056**7323", rightRowMargin, areaTwoStartHeight, {
-        width: 200,
-        align: "right",
-    });
-    // row 2 cashout
+    doc.text(
+        data.tempcardNumberFormatted, // 40 56** **** ** *532
+        rightRowMargin,
+        areaTwoStartHeight,
+        {
+            width: 200,
+            align: "right",
+        }
+    );
+    // row 2 - cashout
     doc.font(montserratMediumPath, 14);
     doc.text("WYPŁATA:", leftRowMargin, areaTwoStartHeight + 25, {
         width: 200,
         align: "left",
     });
-
-    // doc.font(robotoMonoRegularPath, 20);
     doc.font(montserratMediumPath, 22);
-    doc.text("500.00 PLN", rightRowMargin, areaTwoStartHeight + 25, {
-        width: 200,
-        align: "right",
-    });
-
-    ////////////////////////////////////////////////////
-    ////// DENOMINATION ROW START /////////////////////////////
-    doc.font(robotoMonoRegularPath, 10);
-    doc.text("50.00 PLN", denominationMargin, denominationStartHeight, {
-        width: 200,
-        align: "left",
-    });
-    doc.text("*", denominationMargin + 72, denominationStartHeight, {
-        width: 30,
-    });
-    doc.text("2", denominationMargin + 72, denominationStartHeight, {
-        width: 28,
-        align: "right",
-    });
-    doc.text("=", denominationMargin + 115, denominationStartHeight, {
-        width: 30,
-        align: "left",
-    });
-    doc.text("200.00 PLN", denominationMargin + 115, denominationStartHeight, {
-        width: 80,
-        align: "right",
-    });
-    //// DENOMINATION ROW END ////////////
-
-    ////////////////////////////////////////////////////
-    ////// DENOMINATION ROW START /////////////////////////////
-    doc.font(robotoMonoRegularPath, 10);
     doc.text(
-        "100.00 PLN",
-        denominationMargin,
-        denominationStartHeight + denominationRowSpacing,
+        `${data.amountValue} ${data.currency}`, // 200,00 PLN
+        rightRowMargin,
+        areaTwoStartHeight + 25,
         {
             width: 200,
-            align: "left",
-        }
-    );
-    doc.text(
-        "*",
-        denominationMargin + 72,
-        denominationStartHeight + denominationRowSpacing,
-        {
-            width: 30,
-        }
-    );
-    doc.text(
-        "1",
-        denominationMargin + 72,
-        denominationStartHeight + denominationRowSpacing,
-        {
-            width: 28,
             align: "right",
         }
     );
-    doc.text(
-        "=",
-        denominationMargin + 115,
-        denominationStartHeight + denominationRowSpacing,
-        {
-            width: 30,
-            align: "left",
-        }
-    );
-    doc.text(
-        "100.00 PLN",
-        denominationMargin + 115,
-        denominationStartHeight + denominationRowSpacing,
-        {
-            width: 80,
-            align: "right",
-        }
-    );
-    //// DENOMINATION ROW END ////////////
 
-    ////////////////////////////////////////////////////
-    ////// DENOMINATION ROW START /////////////////////////////
-    doc.font(robotoMonoRegularPath, 10);
-    doc.text(
-        "200.00 PLN",
-        denominationMargin,
-        denominationStartHeight + 2 * denominationRowSpacing,
-        {
-            width: 200,
-            align: "left",
-        }
-    );
-    doc.text(
-        "*",
-        denominationMargin + 72,
-        denominationStartHeight + 2 * denominationRowSpacing,
-        {
-            width: 30,
-        }
-    );
-    doc.text(
-        "1",
-        denominationMargin + 72,
-        denominationStartHeight + 2 * denominationRowSpacing,
-        {
-            width: 28,
-            align: "right",
-        }
-    );
-    doc.text(
-        "=",
-        denominationMargin + 115,
-        denominationStartHeight + 2 * denominationRowSpacing,
-        {
-            width: 30,
-            align: "left",
-        }
-    );
-    doc.text(
-        "200.00 PLN",
-        denominationMargin + 115,
-        denominationStartHeight + 2 * denominationRowSpacing,
-        {
-            width: 80,
-            align: "right",
-        }
-    );
-    //// DENOMINATION ROW END ////////////
-
+    let rowCounter = 0;
+    for (const row of data.denomination) {
+        doc.font(robotoMonoRegularPath, 10);
+        doc.text(
+            `${row.denom} ${data.currency}`,
+            denominationMargin + 20,
+            denominationStartHeight + rowCounter * denominationRowSpacing,
+            {
+                width: 100,
+                align: "left",
+            }
+        );
+        doc.text(
+            "*",
+            denominationMargin + 82,
+            denominationStartHeight + rowCounter * denominationRowSpacing,
+            {
+                width: 20,
+            }
+        );
+        doc.text(
+            `${row.count}`,
+            denominationMargin + 82,
+            denominationStartHeight + rowCounter * denominationRowSpacing,
+            {
+                width: 30,
+                align: "right",
+            }
+        );
+        doc.text(
+            "=",
+            denominationMargin + 135,
+            denominationStartHeight + rowCounter * denominationRowSpacing,
+            {
+                width: 20,
+                align: "left",
+            }
+        );
+        doc.text(
+            `${row.denom * row.count} ${data.currency}`,
+            denominationMargin + 115,
+            denominationStartHeight + rowCounter * denominationRowSpacing,
+            {
+                width: 80,
+                align: "right",
+            }
+        );
+        rowCounter++;
+    }
     doc.font(montserratRegularPath, 12);
     doc.text(
         "_______________________________________________________________________",
