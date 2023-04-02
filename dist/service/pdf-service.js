@@ -6,12 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildCashOutPDF = void 0;
 const pdfkit_1 = __importDefault(require("pdfkit"));
 const buildCashOutPDF = (dataCallback, endCallback) => {
-    const doc = new pdfkit_1.default();
+    const doc = new pdfkit_1.default({ size: "A4" });
     doc.on("data", dataCallback);
     doc.on("end", endCallback);
     const areaOneStartHeight = 250;
     const areaTwoStartHeight = 460;
-    const footerStartHeight = 570;
+    const footerStartHeight = 620;
     const leftRowMargin = 90;
     const rightRowMargin = 320;
     const denominationMargin = 322;
