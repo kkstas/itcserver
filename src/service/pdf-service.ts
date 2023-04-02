@@ -16,33 +16,51 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
     doc.on("data", dataCallback);
     doc.on("end", endCallback);
 
-    const areaOneStartHeight = 250;
-    const areaTwoStartHeight = 460;
-    const footerStartHeight = 620;
-    const leftRowMargin = 90;
-    const rightRowMargin = 320;
-    const denominationMargin = 322;
-    const denominationStartHeight = 520;
-    const denominationRowSpacing = 15;
+    // wysokość na której ma się zaczynać pierwsza część potwierdzenia
+    const areaOneStartHeight = 250; // czyli data transakcji, terminal, lokalizacja itd.
+
+    // wysokość na której ma się zaczynać druga część potwierdzenia
+    const areaTwoStartHeight = 460; // czyli nr karty, kwota transakcji
+
+    const footerStartHeight = 620; // wysokość na której ma się zaczynać footer z numerem infolinii, adresem strony planetcash i tekstem "dziękujemy..."
+
+    // odległość od lewej krawędzi dla całej zawartości pliku
+    const leftRowMargin = 44;
+
+    // dosunięcie do prawej krawędzi dla całej zawartości pliku
+    const rightRowMargin = 350;
+
+    const denominationMargin = 353; // dosunięcie denomination do prawej części
+    const denominationStartHeight = 530; // wysokość na której znajduje się denominacja
+    const denominationRowSpacing = 15; // wysokość jednego wiersza, każdy kolejny wiersz jest mnożony przez swoją kolejkę razy ta wartość
 
     const currentWorkingDirectory = process.cwd();
-    const planetCashLogoPath = `${currentWorkingDirectory}/static/images/planet-cash-logo-color.png`;
+
+    const planetCashLogoPath = `${currentWorkingDirectory}/static/images/planet-cash-logo-color.png`; // Link do głównego logo na górze pokwitowania
+
+    // --------------------------- linki do fontów --------------------------- //
     const montserratRegularPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Regular.ttf`;
     const montserratMediumPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Medium.ttf`;
     const montserratBoldPath = `${currentWorkingDirectory}/static/fonts/Montserrat-Bold.ttf`;
     const robotoMonoBoldPath = `${currentWorkingDirectory}/static/fonts/RobotoMono-Bold.ttf`;
     const robotoMonoRegularPath = `${currentWorkingDirectory}/static/fonts/RobotoMono-Regular.ttf`;
-    // styling dokumentu:
+    // ----------------------------------------------------------------------- //
 
+    // ------------------------------------------------------------------------//
+    // -------------------------- STYLING DOKUMENTU: ------------------------- //
+
+    // ----------------------------------------------------------------------- //
+    // ----------- ROW Z INFO O LOKALIZACJI, DACIE, NR TRX etc. -------------- //
     doc.image(planetCashLogoPath, leftRowMargin, 60, {
         fit: [200, 250],
     });
 
-    doc.font(montserratRegularPath, 12);
+    doc.font(montserratRegularPath, 14);
     doc.text("Data i czas", leftRowMargin, areaOneStartHeight, {
         width: 200,
         align: "left",
     });
+    doc.font(montserratMediumPath, 14);
     doc.text(
         data.transactionStartDateTime, // 12.11.2023 18:15:13
         rightRowMargin,
@@ -50,14 +68,15 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
         {
             width: 200,
             align: "right",
-            indent: 30,
         }
     );
     // row 2
+    doc.font(montserratRegularPath, 14);
     doc.text("Terminal", leftRowMargin, areaOneStartHeight + 25, {
         width: 200,
         align: "left",
     });
+    doc.font(montserratMediumPath, 14);
     doc.text(
         data.deviceName, // RNET6338
         rightRowMargin,
@@ -68,10 +87,12 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
         }
     );
     // row 3
+    doc.font(montserratRegularPath, 14);
     doc.text("Nr transakcji", leftRowMargin, areaOneStartHeight + 50, {
         width: 200,
         align: "left",
     });
+    doc.font(montserratMediumPath, 14);
     doc.text(
         data.transactionID, // 02C5C7223161I0004812
         rightRowMargin,
@@ -87,6 +108,7 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
         align: "left",
     });
     // lokalizacja - linia 1
+    doc.font(montserratMediumPath, 14);
     doc.text(
         data.localizationName, // Biedronka
         rightRowMargin,
@@ -116,24 +138,33 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
             align: "right",
         }
     );
+    // ----------- KONIEC ROW Z INFO  ------------------------------ //
+    // ----------- O LOKALIZACJI, DACIE, NR TRX etc. --------------- //
+    // ------------------------------------------------------------- //
 
+    doc.font(montserratRegularPath, 4);
     doc.text(
-        "_______________________________________________________________________",
+        "____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________",
         leftRowMargin,
         areaTwoStartHeight - 30,
         {
-            width: 435,
-            align: "justify",
+            width: 505,
+            align: "center",
         }
     );
 
-    // row 1 - card number
+    // ------------------------------------------------------------- //
+    // ----------- ROW Z INFO O NR KARTY I KWOCIE WYPŁATY ---------- //
+
+    // NR KARTY
+
+    doc.font(montserratRegularPath, 14);
     doc.text("Numer karty:", leftRowMargin, areaTwoStartHeight, {
         width: 200,
         align: "left",
     });
 
-    doc.font(montserratMediumPath, 14);
+    doc.font(montserratMediumPath, 16);
     doc.text(
         data.tempcardNumberFormatted, // 40 56** **** ** *532
         rightRowMargin,
@@ -143,26 +174,34 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
             align: "right",
         }
     );
-    // row 2 - cashout
-    doc.font(montserratMediumPath, 14);
+    // KWOTA WYPŁATY
+    doc.font(montserratMediumPath, 16);
     doc.text("WYPŁATA:", leftRowMargin, areaTwoStartHeight + 25, {
         width: 200,
         align: "left",
     });
-    doc.font(montserratMediumPath, 22);
+    doc.font(montserratMediumPath, 30);
     doc.text(
-        `${data.amountValue} ${data.currency}`, // 200,00 PLN
-        rightRowMargin,
+        `${data.amountValue},00 ${data.currency}`, // 200,00 PLN
+        rightRowMargin - 197,
         areaTwoStartHeight + 25,
         {
-            width: 200,
+            width: 400,
             align: "right",
         }
     );
 
-    let rowCounter = 0;
+    // --------- KONIEC ROW Z INFO O NR KARTY I KWOCIE ------------- //
+    // ------------------------------------------------------------- //
+
+    // ------------------------------------------------------------- //
+    // ----------------------- FOR LOOP ---------------------------- //
+    // ------------- DO WYŚWIETLANIA DENOMINACJI ------------------- //
+    // ------------------------------------------------------------- //
+
+    let rowCounter = 0; // służy do określenia pozycji wiersza
     for (const row of data.denomination) {
-        doc.font(robotoMonoRegularPath, 10);
+        doc.font(robotoMonoRegularPath, 12);
         doc.text(
             `${row.denom} ${data.currency}`,
             denominationMargin + 20,
@@ -191,7 +230,7 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
         );
         doc.text(
             "=",
-            denominationMargin + 135,
+            denominationMargin + 125,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {
                 width: 20,
@@ -209,17 +248,23 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
         );
         rowCounter++;
     }
-    doc.font(montserratRegularPath, 12);
+    // --------------- KONIEC FOR LOOPA DO DENOMINACJI ---------------- //
+    // ---------------------------------------------------------------- //
+
+    doc.font(montserratRegularPath, 4);
     doc.text(
-        "_______________________________________________________________________",
+        "____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________",
         leftRowMargin,
         footerStartHeight + 20,
         {
-            width: 435,
-            align: "justify",
+            width: 505,
+            align: "center",
         }
     );
-    doc.fontSize(10)
+
+    // ---------------------------------------------------------------- //
+    // ------------------------- STOPKA ------------------------------- //
+    doc.font(montserratRegularPath, 10)
         .fillColor("#000000")
         .text("TEL. 801 501 601", 0, footerStartHeight + 64, {
             link: "tel:+48801-501-601",
@@ -242,6 +287,12 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
             align: "center",
             width: 600,
         });
+
+    // ---------------------------------------------------------------- //
+    // --------------------- KONIEC STOPKI ---------------------------- //
+
+    // --------------------- KONIEC STYLINGU -------------------------- //
+    // ----------------------- DOKUMENTU ------------------------------ //
 
     doc.end();
 };
