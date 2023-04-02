@@ -203,42 +203,42 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
     for (const row of data.denomination) {
         doc.font(robotoMonoRegularPath, 12);
         doc.text(
-            `${row.denom} ${data.currency}`,
-            denominationMargin + 20,
+            `${row.denom},00 ${data.currency}`,
+            denominationMargin,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {
-                width: 100,
+                width: 140,
                 align: "left",
             }
         );
         doc.text(
             "*",
-            denominationMargin + 82,
+            denominationMargin + 80,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {
-                width: 20,
+                width: 40,
             }
         );
         doc.text(
             `${row.count}`,
-            denominationMargin + 82,
+            denominationMargin + 62,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {
-                width: 30,
+                width: 40,
                 align: "right",
             }
         );
         doc.text(
             "=",
-            denominationMargin + 125,
+            denominationMargin + 108,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {
-                width: 20,
+                width: 40,
                 align: "left",
             }
         );
         doc.text(
-            `${row.denom * row.count} ${data.currency}`,
+            `${row.denom * row.count},00 ${data.currency}`,
             denominationMargin + 115,
             denominationStartHeight + rowCounter * denominationRowSpacing,
             {

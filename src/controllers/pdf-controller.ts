@@ -1,8 +1,10 @@
 import { RequestHandler } from "express";
 import { buildCashOutPDF } from "../service/pdf-service";
-import { exampleCashOutTrxData } from "../utils/exampleData";
+import { getExampleCashOutTrxData } from "../utils/exampleData";
 
 export const pdfController: RequestHandler = (req, res, next) => {
+    const data = getExampleCashOutTrxData();
+
     // przy 'Content-Disposition' określasz czy jako attachment ma się pobierać czy ma się wyświetlić w oknie przeglądarki
     const contentDispositionString =
         "attachment;filename=planet-cash-receipt-" +
@@ -14,7 +16,7 @@ export const pdfController: RequestHandler = (req, res, next) => {
     });
 
     buildCashOutPDF(
-        exampleCashOutTrxData, // dane do pokwitowania
+        data, // dane do pokwitowania
         (chunk) => stream.write(chunk),
         () => stream.end()
     );

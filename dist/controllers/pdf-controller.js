@@ -4,6 +4,7 @@ exports.pdfController = void 0;
 const pdf_service_1 = require("../service/pdf-service");
 const exampleData_1 = require("../utils/exampleData");
 const pdfController = (req, res, next) => {
+    const data = (0, exampleData_1.getExampleCashOutTrxData)();
     // przy 'Content-Disposition' określasz czy jako attachment ma się pobierać czy ma się wyświetlić w oknie przeglądarki
     const contentDispositionString = "attachment;filename=planet-cash-receipt-" +
         new Date().toISOString() +
@@ -12,7 +13,7 @@ const pdfController = (req, res, next) => {
         "Content-Type": "application/pdf",
         "Content-Disposition": contentDispositionString,
     });
-    (0, pdf_service_1.buildCashOutPDF)(exampleData_1.exampleCashOutTrxData, // dane do pokwitowania
+    (0, pdf_service_1.buildCashOutPDF)(data, // dane do pokwitowania
     (chunk) => stream.write(chunk), () => stream.end());
 };
 exports.pdfController = pdfController;
