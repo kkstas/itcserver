@@ -78,6 +78,7 @@ const buildCashOutPDF = (data, dataCallback, endCallback) => {
         align: "right",
     });
     //row 4
+    doc.font(montserratRegularPath, 14);
     doc.text("Lokalizacja", leftRowMargin, areaOneStartHeight + 75, {
         width: 200,
         align: "left",
