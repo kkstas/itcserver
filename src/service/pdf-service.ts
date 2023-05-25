@@ -201,57 +201,57 @@ export const buildCashOutPDF: IBuildCashOutPDF = (
   // ------------- DO WYŚWIETLANIA DENOMINACJI ------------------- //
   // ------------------------------------------------------------- //
 
-  let rowCounter = 0; // służy do określenia pozycji wiersza
-  if (data.denomination) {
-    for (const row of data.denomination) {
-      doc.font(robotoMonoRegularPath, 12);
-      doc.text(
-        `${row.denom},00 ${data.currency}`,
-        denominationMargin,
-        denominationStartHeight + rowCounter * denominationRowSpacing,
-        {
-          width: 140,
-          align: "left",
-        }
-      );
-      doc.text(
-        "*",
-        denominationMargin + 80,
-        denominationStartHeight + rowCounter * denominationRowSpacing,
-        {
-          width: 40,
-        }
-      );
-      doc.text(
-        `${row.count}`,
-        denominationMargin + 62,
-        denominationStartHeight + rowCounter * denominationRowSpacing,
-        {
-          width: 40,
-          align: "right",
-        }
-      );
-      doc.text(
-        "=",
-        denominationMargin + 108,
-        denominationStartHeight + rowCounter * denominationRowSpacing,
-        {
-          width: 40,
-          align: "left",
-        }
-      );
-      doc.text(
-        `${row.denom * row.count},00 ${data.currency}`,
-        denominationMargin + 115,
-        denominationStartHeight + rowCounter * denominationRowSpacing,
-        {
-          width: 80,
-          align: "right",
-        }
-      );
-      rowCounter++;
-    }
-  }
+  // let rowCounter = 0; // służy do określenia pozycji wiersza
+  // if (data.denomination) {
+  //   for (const row of data.denomination) {
+  //     doc.font(robotoMonoRegularPath, 12);
+  //     doc.text(
+  //       `${row.denom},00 ${data.currency}`,
+  //       denominationMargin,
+  //       denominationStartHeight + rowCounter * denominationRowSpacing,
+  //       {
+  //         width: 140,
+  //         align: "left",
+  //       }
+  //     );
+  //     doc.text(
+  //       "*",
+  //       denominationMargin + 80,
+  //       denominationStartHeight + rowCounter * denominationRowSpacing,
+  //       {
+  //         width: 40,
+  //       }
+  //     );
+  //     doc.text(
+  //       `${row.count}`,
+  //       denominationMargin + 62,
+  //       denominationStartHeight + rowCounter * denominationRowSpacing,
+  //       {
+  //         width: 40,
+  //         align: "right",
+  //       }
+  //     );
+  //     doc.text(
+  //       "=",
+  //       denominationMargin + 108,
+  //       denominationStartHeight + rowCounter * denominationRowSpacing,
+  //       {
+  //         width: 40,
+  //         align: "left",
+  //       }
+  //     );
+  //     doc.text(
+  //       `${row.denom * row.count},00 ${data.currency}`,
+  //       denominationMargin + 115,
+  //       denominationStartHeight + rowCounter * denominationRowSpacing,
+  //       {
+  //         width: 80,
+  //         align: "right",
+  //       }
+  //     );
+  //     rowCounter++;
+  //   }
+  // }
   // --------------- KONIEC FOR LOOPA DO DENOMINACJI ---------------- //
   // ---------------------------------------------------------------- //
 

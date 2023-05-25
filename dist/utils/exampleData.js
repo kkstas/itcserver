@@ -90,7 +90,7 @@ const randomExampleDataArray = [
         localizationStreet: "Królowej Jadwigi 2",
         localizationCity: "Będzin",
         tempcardNumberFormatted: "4099 ** **** *932",
-        amountValue: 380,
+        amountValue: 480,
         currency: "PLN",
         denomination: [
             {
