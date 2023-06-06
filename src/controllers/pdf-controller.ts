@@ -4,6 +4,7 @@ import { buildCashOutPDF } from "../service/pdf-service";
 import { CashOutTrxData } from "../types";
 
 export const pdfController: RequestHandler = (req, res, _next) => {
+  console.time();
   // const data = getExampleCashOutTrxData();
   const reqData: CashOutTrxData = {
     transactionStartDateTime: `${req.query.a}`,
@@ -36,6 +37,7 @@ export const pdfController: RequestHandler = (req, res, _next) => {
     (chunk) => stream.write(chunk),
     () => stream.end()
   );
+  console.timeEnd();
 };
 
 // const queryString = "?a=12:24:43&b=RNET6338&c=asldkfjwod fw&d=ITCARD&e=ul. Zwycięska 43&f=Wrocław&g=234234*******3242342&h=200,00 PLN";
